@@ -8,31 +8,28 @@ export class ProductsController {
     @HttpCode(HttpStatus.CREATED)
     @Get()
     findAll(@Query() pagination:any){
-        const { offset, limit } = pagination; 
-        return `essa rota retorna todos, offset ${offset}, limit ${limit}`
+        this.productsService.findAll(pagination);
+        return  this.productsService.findAll(pagination);
     }
 
     @Get(":id")
     findOne(@Param('id') id: number){
-        return 'essa rota é um recado'
+        return  this.productsService.findAll(id);
     }  
 
     @Post()
     create(@Body() body: any){
-        return `${body}`;
+        return  this.productsService.create(body);
     }
 
     @Patch(':id')
     update(@Body() body:any, @Param() id:any){
-        return {
-            id,
-            ...body
-        };
+        return  this.productsService.update(id, body);
     }
 
     @Delete(':id')
     remove(@Param() id:any){
-        return `essa rota apaga o id ${id}`;
+        return  this.productsService.remove(id);
     }
 
 }
