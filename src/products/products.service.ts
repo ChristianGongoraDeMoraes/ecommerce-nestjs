@@ -2,11 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { ProductEntity } from './entities/product.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PaginationDto } from './dto/PaginationDto';
+import { UpdateProductDto } from './dto/UpdateProductDto';
+import { CreateProductDto } from './dto/CreateProductDto';
 
 @Injectable()
 export class ProductsService {
     //throw new HttpException("message", HttpStatus.NotFound)
-     constructor(
+    constructor(
     @InjectRepository(ProductEntity)
     private readonly productRepository: Repository<ProductEntity>){}
 
@@ -15,11 +18,10 @@ export class ProductsService {
     }
 
     async findAll(paginationDto?: PaginationDto){
-    const { limit = 10, offset = 0 } = paginationDto;
 
     const products = await this.productRepository.find({
-      take: limit, // quantos registros serão exibidos (por página)
-      skip: offset, // quantos registros devem ser pulados
+      take: paginationDto?.limit || 10, // quantos registros serão exibidos (por página)
+      skip: paginationDto?.offset || 0, // quantos registros devem ser pulados
     });
 
     return products;
@@ -52,24 +54,36 @@ export class ProductsService {
   }
 
   async update(id: number, updateProductDto: UpdateProductDto){
-    const produto = await this.findOne(id);
-    if(!produto) this.throwNotFoundError()
+    const produto = await this.productRepository.findOne({
+        where:{
+            id,
+        }    
+    });
+    if(!produto) this.throwNotFoundError();
 
-    produto.name = updateProductDto?.name ?? produto.name;
-    produto.price = updateProductDto?.price ?? produto.price;
-    produto.amount_on_storage = updateProductDto?.amount_on_storage ?? produto.amount_on_storage
-    produto.description = updateProductDto?.description ?? produto.description
-       
-    await this.productRepository.save(produto);
-    return produto;
+    if(produto){
+        produto.name = updateProductDto?.name ?? produto.name;
+        produto.price = updateProductDto?.price ?? produto.price;
+        produto.amount_on_storage = updateProductDto?.amount_on_storage ?? produto.amount_on_storage
+        produto.description = updateProductDto?.description ?? produto.description
+           
+        await this.productRepository.save(produto);
+        return produto;
+    }
   }
 
   async remove(id: number){
-    const produto = await this.findOne(id);
+    const produto = await this.productRepository.findOne({
+        where:{
+            id,
+        }    
+    });
     if(!produto) this.throwNotFoundError()
 
-    await this.productRepository.delete(produto.id);
-
-    return produto;
+    if(produto){
+        await this.productRepository.delete(produto.id);
+    
+        return produto;
+    }
   }
 }
