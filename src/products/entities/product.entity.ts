@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { CarrinhoEntity } from "src/carrinho/entities/carrinho.entity";
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class ProductEntity{
@@ -16,4 +17,7 @@ export class ProductEntity{
     
     @Column()
     description: string;
+
+    @ManyToMany(() => CarrinhoEntity, carrinho => carrinho.Products)
+    carrinhos: CarrinhoEntity[];
 }
