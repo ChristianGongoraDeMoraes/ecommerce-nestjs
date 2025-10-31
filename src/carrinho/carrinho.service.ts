@@ -22,7 +22,7 @@ export class CarrinhoService {
         async findAll(){
     
         const carrinhos = await this.carrinhoRepository.find({
-            relations: ['Pessoa', 'Products'],
+            relations: ['Pessoa'],
         });
     
         return carrinhos;
@@ -37,7 +37,7 @@ export class CarrinhoService {
             where: {
                 Pessoa_id: pessoa.id,
             },
-            relations: ['Pessoa', 'Products'],
+            relations: ['Pessoa'],
             });
             
             if (!carrinho) this.throwNotFoundError();
@@ -72,7 +72,7 @@ export class CarrinhoService {
                 where:{
                     Pessoa_id: pessoa.id,
                 },
-                relations: ['Pessoa', 'Products'],
+                relations: ['Pessoa'],
             });
             if(!carrinho) this.throwNotFoundError();
         
@@ -89,7 +89,7 @@ export class CarrinhoService {
             where:{
                 id,
             },
-            relations: ['Pessoa', 'Products'],
+            relations: ['Pessoa'],
         });
         if(!carrinho) this.throwNotFoundError()
     

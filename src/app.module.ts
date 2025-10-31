@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { PessoasModule } from './pessoas/pessoas.module';
 import { CarrinhoModule } from './carrinho/carrinho.module';
+import { CompraModule } from './compra/compra.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -17,7 +18,7 @@ import { CarrinhoModule } from './carrinho/carrinho.module';
     password: '4',
     autoLoadEntities: true,
     synchronize: true,
-  }),ProductsModule, AuthModule, PessoasModule, CarrinhoModule],
+  }),ProductsModule, AuthModule, PessoasModule, CarrinhoModule, CompraModule],
   controllers: [AppController],
   providers: [AppService],
 })

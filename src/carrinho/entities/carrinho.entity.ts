@@ -14,7 +14,6 @@ export class CarrinhoEntity{
     @Column()
     Pessoa_id: number;
 
-    @ManyToMany(() => ProductEntity)
-    @JoinTable()
+    @Column({ type: 'jsonb', default: () => "'[]'" })
     Products: ProductEntity[];
 }
