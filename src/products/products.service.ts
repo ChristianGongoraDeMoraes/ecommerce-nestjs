@@ -1,10 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { ProductEntity } from './entities/product.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationDto } from './dto/PaginationDto';
 import { UpdateProductDto } from './dto/UpdateProductDto';
 import { CreateProductDto } from './dto/CreateProductDto';
+import * as path from 'path';
+import * as fs from 'fs/promises';
 
 @Injectable()
 export class ProductsService {
@@ -84,6 +86,40 @@ export class ProductsService {
         await this.productRepository.delete(produto.id);
     
         return produto;
+    }
+  }
+
+
+  async uploadPicture(
+    file: Express.Multer.File,
+    productName: string
+  ) {
+    if (file.size < 1024) {
+      throw new BadRequestException('File too small');
+    }
+
+    const product = await this.productRepository.findOne({
+      where:{
+        name: productName
+      }
+    });
+    if(!product){
+      throw new BadRequestException('Product Invalid');
+    }
+    if(product){
+      const fileExtension = path
+        .extname(file.originalname)
+        .toLowerCase()
+        .substring(1);
+      const fileName = `${product?.name}.${fileExtension}`;
+      const fileFullPath = path.resolve(process.cwd(), 'pictures', fileName);
+  
+      await fs.writeFile(fileFullPath, file.buffer);
+  
+      product.picture = fileName;
+      await this.productRepository.save(product);
+  
+      return product;
     }
   }
 }

@@ -7,6 +7,8 @@ import { AuthModule } from './auth/auth.module';
 import { PessoasModule } from './pessoas/pessoas.module';
 import { CarrinhoModule } from './carrinho/carrinho.module';
 import { CompraModule } from './compra/compra.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import * as path from 'path';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -18,8 +20,13 @@ import { CompraModule } from './compra/compra.module';
     password: '4',
     autoLoadEntities: true,
     synchronize: true,
-  }),ProductsModule, AuthModule, PessoasModule, CarrinhoModule, CompraModule],
+  }),ProductsModule, AuthModule, PessoasModule, CarrinhoModule, CompraModule,
+   ServeStaticModule.forRoot({
+      rootPath: path.resolve(__dirname, '..', 'pictures'),
+      serveRoot: '/pictures',
+    }),],
   controllers: [AppController],
   providers: [AppService],
+  
 })
 export class AppModule {}

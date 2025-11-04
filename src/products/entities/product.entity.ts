@@ -18,4 +18,7 @@ export class ProductEntity{
     
     @Column()
     description: string;
+
+    @Column({ default: '' })
+    picture: string;
 }
